@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>802622782123-mdq33p5fdclesu6nbv50v4mrio6fgako.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.802622782123-mdq33p5fdclesu6nbv50v4mrio6fgako</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAH_PpJULqFEbLeerYBwl-8jeGtFk2PP98</string>
+	<key>GCM_SENDER_ID</key>
+	<string>802622782123</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.amy.Otter</string>
+	<key>PROJECT_ID</key>
+	<string>otter-4cd59</string>
+	<key>STORAGE_BUCKET</key>
+	<string>otter-4cd59.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:802622782123:ios:58e08127d49462571995ee</string>
+	<key>DATABASE_URL</key>
+	<string>https://otter-4cd59.firebaseio.com</string>
+</dict>
+</plist>
