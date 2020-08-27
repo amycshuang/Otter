@@ -7,3 +7,15 @@
 //
 
 import Foundation
+
+class MenuItem {
+    
+    var menuItemName: String
+    var menuItemIcon: String
+    
+    init(menuItemName: String, menuItemIcon: String) {
+        self.menuItemName = menuItemName
+        self.menuItemIcon = menuItemIcon
+    }
+    
+}

@@ -9,7 +9,6 @@
 import UIKit
 import SnapKit
 import Firebase
-import FirebaseFirestore
 import FirebaseAuth
 
 class Register: UIViewController {
@@ -30,10 +29,12 @@ class Register: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = Constants.blue
         self.navigationController?.navigationBar.isHidden = true
+        self.hideKeyboardWhenViewTapped()
        
         profileImage = UIImageView()
         profileImage.image = UIImage(named: "profileplaceholder")
         profileImage.layer.cornerRadius = 44
+        profileImage.backgroundColor = .white
         profileImage.clipsToBounds = true
         profileImage.contentMode = .scaleAspectFill
         view.addSubview(profileImage)
@@ -102,25 +103,33 @@ class Register: UIViewController {
         
     }
     
+    @objc func popRegisterVC() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     @objc func checkUsername(_ textField: UITextField) {
         if userNameTextField.text != "" {
             guard let username = userNameTextField.text else {return}
-            let docRef = DatabaseManager.firebaseRef.collection("Usernames").document(username)
+            let docRef = DatabaseManager.firestoreRef.collection("Usernames").document(username)
             docRef.getDocument { (document, error) in
                 guard let document = document else {return}
                 if document.exists {
-                    // Another account is already associated with this username
-                    self.usernameExistsBool = true
-                    self.usernameExistsLabel.text = "Username is taken"
-                    self.usernameExistsLabel.isHidden = false
-                    self.userNameTextField.textColor = Constants.red
+                    DispatchQueue.main.async {
+                        // Another account is already associated with this username
+                        self.usernameExistsBool = true
+                        self.usernameExistsLabel.text = "Username is taken"
+                        self.usernameExistsLabel.isHidden = false
+                        self.userNameTextField.textColor = Constants.red
+                    }
                 }
                 else {
-                    // There is no other account associated with this username
-                    self.usernameExistsBool = false
-                    self.usernameExistsLabel.text = ""
-                    self.usernameExistsLabel.isHidden = true
-                    self.userNameTextField.textColor = .white
+                    DispatchQueue.main.async {
+                        // There is no other account associated with this username
+                        self.usernameExistsBool = false
+                        self.usernameExistsLabel.text = ""
+                        self.usernameExistsLabel.isHidden = true
+                        self.userNameTextField.textColor = .white
+                    }
                 }
             }
         }
@@ -129,32 +138,33 @@ class Register: UIViewController {
         }
     }
     
-    @objc func popRegisterVC() {
-        self.navigationController?.popViewController(animated: true)
+    @objc func chooseImage() {
+        presentPhotoActionsheet()
     }
     
     @objc func signUp() {
-        if let name = nameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let username = userNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let confirmPassword = confirmPasswordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) {
+        if let name = nameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let username = userNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let confirmPassword = confirmPasswordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), let image = profileImage.image {
             
             if validateFields(name: name, username: username, email: email, password: password, confirmPassword: confirmPassword) {
                 Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
-                    // Check for errors in creating user
                     if let error = error as NSError? {
+                        print("there is an error")
                         switch AuthErrorCode(rawValue: error.code) {
                         case .emailAlreadyInUse:
                             self.alert(message: "Email already in use", title: "Invalid Email")
                         case .invalidEmail:
                             self.alert(message: "Please ensure the email is formatted correctly", title: "Invalid Email")
                         default:
-                            // There was an error in creating the user
                             self.alert(message: "There was an error in creating your account. Please try again.", title: "Error")
                         }
                     }
                     else {
                         guard let uid = result?.user.uid else { return }
-                        // User was created successfully
-                        DatabaseManager.createUser(uid: uid, name: name, username: username, email: email)
-                        // Transition to Messages view
+                        guard let headerImage = UIImage(named: "defaultheader") else { return }
+                        DatabaseManager.uploadUserToFirebase(image: image, uid: uid, name: name, username: username, email: email, headerImage: headerImage) { (imageUrl) in
+                            User.imageUrl = imageUrl
+                        }
+                        self.getUserInfo(uid: uid, name: name, username: username)
                         self.transitionToMessages()
                     }
                 }
@@ -162,42 +172,35 @@ class Register: UIViewController {
         }
     }
     
+    func getUserInfo(uid: String, name: String, username: String) {
+        User.uid = uid
+        User.name = name
+        User.username = username
+    }
+    
     func validateFields(name: String, username: String, email: String, password: String, confirmPassword: String) -> Bool {
             if name == "" || username == "" || email == "" || password == "" || confirmPassword == "" {
-                // One or more fields is empty
                 alert(message: "Please fill out all fields", title: "Invalid Information")
                 return false
             }
             else if !Utilities.isValidPassword(password) {
-                // Password does not meet the security requirements
                 alert(message: "Please make sure your password is at least 8 characters, contains a special character and a number", title: "Invalid Password")
                 return false
             }
             else if password != confirmPassword {
-                // Both password fields do not match
                 alert(message: "Please make sure your passwords match", title: "Invalid Password Fields")
                 return false
             }
             else if usernameExistsBool == true {
-                // The username the user has chosen already exists
                 alert(message: "Another account is already associated with this username", title: "Invalid Username")
                 return false
-        }
-        // Fields are all valid
+            }
         return true
     }
-    
+
     func transitionToMessages() {
-        //let rootVC = Messages()
-        //view.window?.rootViewController = UINavigationController(rootViewController: rootVC)
         view.window?.rootViewController = TabBar()
         view.window?.makeKeyAndVisible()
-    }
-    
-    // FINISH IMPLEMENTING
-    @objc func chooseImage() {
-        print("choosing image...")
-        presentPhotoActionsheet()
     }
        
     func setUpConstraints() {
@@ -301,8 +304,12 @@ extension Register: UIImagePickerControllerDelegate, UINavigationControllerDeleg
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
-        profileImage.image = editedImage
+        if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            profileImage.image = editedImage
+        }
+        else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            profileImage.image = originalImage
+        }
         picker.dismiss(animated: true, completion: nil)
     }
     

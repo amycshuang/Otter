@@ -106,7 +106,7 @@ extension SearchUser: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let user = searchedUsers[indexPath.row]
-        let vc = OtterUserProfile(user: user)
+        let vc = OtterUserProfile(user: user, barButtonHidden: false)
         let navVC = UINavigationController(rootViewController: vc)
         navVC.modalPresentationStyle = .overFullScreen
         present(navVC, animated: true, completion: nil)
@@ -149,7 +149,8 @@ extension SearchUser: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.searchedUsers = []
-        noResultsLabel.isHidden = true 
+        noResultsLabel.isHidden = true
+        didBeginSearching = false
         DispatchQueue.main.async {
             self.searchTableView.reloadData()
         }

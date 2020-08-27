@@ -1,5 +1,5 @@
 //
-//  SaveImageAlert.swift
+//  SaveImagePopup.swift
 //  Otter
 //
 //  Created by Amy Chin Siu Huang on 8/12/20.
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-class SaveImageAlert: UIView {
+class SaveImagePopup: UIView {
     
     weak var saveImageDelegate: SaveImageProtocol?
     var saveButton: UIButton!
@@ -23,21 +23,22 @@ class SaveImageAlert: UIView {
         self.layer.masksToBounds = true
         
         saveButton = UIButton()
-        saveButton.setTitle("Log In", for:  .normal)
+        saveButton.setTitle("Save Image", for:  .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         saveButton.addTarget(self, action: #selector(saveImage), for: .touchUpInside)
-        saveButton.setTitleColor(Constants.blue, for: .normal)
-        saveButton.backgroundColor = .white
-        saveButton.layer.borderColor = UIColor.white.cgColor
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.backgroundColor = Constants.blue
+        saveButton.layer.borderColor = Constants.blue.cgColor
         saveButton.layer.borderWidth = 1
         saveButton.layer.cornerRadius = 8
         self.addSubview(saveButton)
         
         cancelButton = UIButton()
-        cancelButton.setTitle("Sign Up", for: .normal)
+        cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         cancelButton.addTarget(self, action: #selector(cancel), for: .touchUpInside)
-        cancelButton.layer.borderColor = UIColor.white.cgColor
+        cancelButton.setTitleColor(Constants.blue, for: .normal)
+        cancelButton.layer.borderColor = Constants.blue.cgColor
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.cornerRadius = 8
         self.addSubview(cancelButton)
@@ -47,7 +48,7 @@ class SaveImageAlert: UIView {
     }
     
     @objc func saveImage() {
-        saveImageDelegate?.saveImage()
+        saveImageDelegate?.saveImageToLibrary()
     }
     
     @objc func cancel() {
@@ -55,7 +56,22 @@ class SaveImageAlert: UIView {
     }
     
     func setUpConstraints() {
+        let buttonWidth: CGFloat = 170
+        let buttonHeight: CGFloat = 60
         
+        saveButton.snp.makeConstraints { (make) in
+            make.centerX.equalTo(self.snp.centerX)
+            make.centerY.equalTo(self.snp.centerY).offset(-40)
+            make.width.equalTo(buttonWidth)
+            make.height.equalTo(buttonHeight)
+        }
+        
+        cancelButton.snp.makeConstraints { (make) in
+            make.centerX.equalTo(self.snp.centerX)
+            make.centerY.equalTo(self.snp.centerY).offset(40)
+            make.width.equalTo(buttonWidth)
+            make.height.equalTo(buttonHeight)
+        }
     }
     
     required init?(coder: NSCoder) {

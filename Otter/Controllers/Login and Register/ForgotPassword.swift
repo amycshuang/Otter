@@ -21,6 +21,7 @@ class ForgotPassword: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = Constants.blue
+        self.hideKeyboardWhenViewTapped()
         self.navigationController?.navigationBar.isHidden = true
         
         emailTextField = UITextField()

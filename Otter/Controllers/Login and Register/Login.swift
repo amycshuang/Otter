@@ -22,6 +22,7 @@ class Login: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.blue
+        self.hideKeyboardWhenViewTapped()
         self.navigationController?.navigationBar.isHidden = true
         
         emailTextField = UITextField()
@@ -49,7 +50,6 @@ class Login: UIViewController {
         forgotPasswordButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         view.addSubview(forgotPasswordButton)
         
-        // Set the language of the forgot password email sent to the user
         Auth.auth().languageCode = "en"
         
         loginButton = UIButton()
@@ -90,9 +90,7 @@ class Login: UIViewController {
                         }
                     }
                     else {
-                        // Transition to Messages view
                         self.transitionToMessages()
-                        self.getUserInfo()
                     }
                 }
             }
@@ -100,34 +98,18 @@ class Login: UIViewController {
     }
     
     func transitionToMessages() {
-        //let rootVC = Messages()
-        //view.window?.rootViewController = UINavigationController(rootViewController: rootVC)
-        view.window?.rootViewController = TabBar()
-        view.window?.makeKeyAndVisible()
-        
-    }
-    
-    // NEED TO COMPLETE
-    func getUserInfo() {
-        let user = Auth.auth().currentUser
-        if let user = user {
-            User.uid = user.uid
-            //User.name =
-            //User.username =
-            User.email = user.email
-            //User.imageURL =
-            //User.bio =
+        DispatchQueue.main.async {
+            self.view.window?.rootViewController = TabBar()
+            self.view.window?.makeKeyAndVisible()
         }
     }
     
     func validateFields(email: String, password: String) -> Bool {
         if email == "" || password == "" {
-            // One or more fields is empty
             alert(message: "Please fill out all fields", title: "Login Error")
             return false
         }
         else if !Utilities.isValidEmail(email) {
-            // Invalid email
             alert(message: "Please enter a valid email", title: "Invalid Email")
             return false
         }

@@ -13,18 +13,31 @@ class TabBar: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        self.tabBar.isTranslucent = false
+        let tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.tintColor = Constants.blue
+        tabBarAppearance.unselectedItemTintColor = .lightGray
+        
+        let tabHeight = self.tabBar.frame.height
+        Constants.tabBarHeight = tabHeight
+        
+        let homeContainerVC = HomeMenuContainer()
+        homeContainerVC.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "homeicon"), selectedImage: UIImage(named: "homeicon"))
+        
+        let globalPostsVC = UINavigationController(rootViewController: GlobalPosts())
+        globalPostsVC.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "globalicon"), selectedImage: UIImage(named: "globalicon"))
+        
+        let searchUserVC = UINavigationController(rootViewController: SearchUser())
+        searchUserVC.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "searchicon"), selectedImage: UIImage(named: "searchicon"))
+        
+        let messagesVC = UINavigationController(rootViewController: Messages())
+        messagesVC.tabBarItem = UITabBarItem(title: "", image: UIImage(named: "messageiconfilled"), selectedImage: UIImage(named: "messageiconfilled"))
+        
+        
+        let tabBars = [homeContainerVC, globalPostsVC, searchUserVC, messagesVC]
+        
+        viewControllers = tabBars
+        
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

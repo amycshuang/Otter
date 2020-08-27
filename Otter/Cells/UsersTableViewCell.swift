@@ -1,5 +1,5 @@
 //
-//  NewMessageTableViewCell.swift
+//  UsersTableViewCell.swift
 //  Otter
 //
 //  Created by Amy Chin Siu Huang on 7/28/20.
@@ -9,7 +9,7 @@
 import UIKit
 import SnapKit
 
-class NewMessageTableViewCell: UITableViewCell {
+class UsersTableViewCell: UITableViewCell {
 
     var profilePic: UIImageView!
     var nameLabel: UILabel!
@@ -19,21 +19,19 @@ class NewMessageTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         profilePic = UIImageView()
-        profilePic.contentMode = .scaleAspectFit
-        // TODO - COMMENT OUT LATER
-        profilePic.layer.borderWidth = 1
+        profilePic.contentMode = .scaleAspectFill
+        profilePic.clipsToBounds = true
         profilePic.layer.cornerRadius = 25
         contentView.addSubview(profilePic)
         
-        
         nameLabel = UILabel()
-        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        nameLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         contentView.addSubview(nameLabel)
         
         usernameLabel = UILabel()
         usernameLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         usernameLabel.textColor = .gray
-        contentView.addSubview(nameLabel)
+        contentView.addSubview(usernameLabel)
         
         setUpConstraints()
     }
@@ -45,7 +43,7 @@ class NewMessageTableViewCell: UITableViewCell {
         profilePic.snp.makeConstraints { (make) in
             make.height.width.equalTo(picSize)
             make.centerY.equalTo(contentView.snp.centerY)
-            make.leading.equalTo(contentView.snp.leading).offset(15)
+            make.leading.equalTo(contentView.snp.leading).offset(17)
         }
         
         nameLabel.snp.makeConstraints { (make) in
@@ -53,18 +51,17 @@ class NewMessageTableViewCell: UITableViewCell {
             make.leading.equalTo(profilePic.snp.trailing).offset(8)
             make.height.equalTo(nameLabelHeight)
         }
-        
+
         usernameLabel.snp.makeConstraints { (make) in
-            make.top.equalTo(nameLabel.snp.bottom).offset(5)
+            make.top.equalTo(nameLabel.snp.bottom).offset(3)
             make.leading.equalTo(nameLabel.snp.leading)
         }
     }
     
     func configure(for user: OtherUser) {
-        // TODO - MODIFY LATER
-        profilePic.image = UIImage(named: "profileplaceholder")
+        profilePic.getImage(from: user.imageUrl)
         nameLabel.text = user.name
-        usernameLabel.text = user.username
+        usernameLabel.text = "@\(user.username)"
     }
     
     required init?(coder: NSCoder) {

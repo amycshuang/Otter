@@ -27,19 +27,20 @@ class Menu: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.delegate = delegate
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
     
+        DatabaseManager.getUserInfo()
+        
         profilePic = UIImageView()
         guard let url = User.imageUrl else { return }
         profilePic.getImage(from: url)
-        print(url)
         profilePic.layer.cornerRadius = 40
         profilePic.clipsToBounds = true
         profilePic.contentMode = .scaleAspectFill
@@ -82,9 +83,26 @@ class Menu: UIViewController {
         } catch {
           alert(message: "Sign out error", title: "Error")
         }
+        logOutUser()
         let rootVC = Welcome()
         self.view.window?.rootViewController = UINavigationController(rootViewController: rootVC)
         self.view.window?.makeKeyAndVisible()
+    }
+    
+    func logOutUser() {
+        User.uid = ""
+        User.name = ""
+        User.username = ""
+        User.email = ""
+        User.imageUrl = ""
+        User.bio = ""
+        User.headerUrl = ""
+        User.searchName = ""
+        User.searchUsername = ""
+        User.favoritedPosts = []
+        User.sharedPosts = []
+        User.following = []
+        User.followers = []
     }
     
     func setUpMenu() {
@@ -135,7 +153,7 @@ extension Menu: UITableViewDataSource {
         return menuItems.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {        
         let cell = menuTableView.dequeueReusableCell(withIdentifier: menuReuseIdentifier, for: indexPath) as! MenuTableViewCell
         let menuItem = menuItems[indexPath.row]
         cell.configure(for: menuItem)
