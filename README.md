@@ -101,6 +101,6 @@ Otter is a real-time social media app utilizing Google Firestore and Google Fire
     * Click the info icon to see the profile of the user you are chatting with
   
   <img src="Images/messages.png" width="270"/> <img src="Images/chat2.png" width="270"/> <img src="Images/chatimage.png" width="270"/>  
-  <img src="Images/messages.png" width="270"/> <img src="Images/chat1.png" width="270"/> <img src="Images/holdsaveimage.png" width="270"/> 
+  <img src="Images/messages.png" width="270"/> <img src="Images/chat1.png" width="270"/> <img src="Images/holdsave.png" width="270"/> <img src="Images/holdsaveimage.png" width="270"/> 
   
 
